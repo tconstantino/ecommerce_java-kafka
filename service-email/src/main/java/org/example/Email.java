@@ -1,3 +1,5 @@
+package org.example;
+
 public class Email {
     public Email(String subject, String body) {
         this.subject = subject;

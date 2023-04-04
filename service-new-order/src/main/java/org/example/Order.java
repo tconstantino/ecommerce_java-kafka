@@ -1,4 +1,4 @@
-import org.apache.kafka.common.protocol.types.Field;
+package org.example;
 
 import java.math.BigDecimal;
 

@@ -1,6 +1,7 @@
+package org.example;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.common.serialization.Deserializer;
 
 import java.util.Map;
