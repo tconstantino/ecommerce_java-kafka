@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutionException;
 public class NewOrderMain {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         try(var orderDispatcher = new KafkaDispatcher<Order>();
-            var emailDispatcher = new KafkaDispatcher<String>()) {
+            var emailDispatcher = new KafkaDispatcher<Email>()) {
             for (int i = 0; i < 10; i++) {
                 var key = UUID.randomUUID().toString();
 
@@ -15,7 +15,9 @@ public class NewOrderMain {
                 var order = new Order(userId, orderId, amount);
                 orderDispatcher.send("ECOMMERCE_NEW_ORDER", key, order);
 
-                var email = "Thank you for your order! We are processing your order!";
+                var subject = "New order";
+                var body = "Thank you for your order! We are processing your order!";
+                var email = new Email(subject, body);
                 emailDispatcher.send("ECOMMERCE_SEND_EMAIL", key, email);
             }
         }
