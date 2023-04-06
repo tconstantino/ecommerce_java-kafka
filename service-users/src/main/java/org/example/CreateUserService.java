@@ -15,6 +15,7 @@ public class CreateUserService {
         try {
             connection.createStatement().execute("CREATE TABLE USERS (UUID VARCHAR(200) PRIMARY KEY, EMAIL VARCHAR(200))");
         } catch (SQLException e) {
+            // Be careful, the sql could be wrong, be really careful
             e.printStackTrace();
         }
     }
@@ -30,7 +31,7 @@ public class CreateUserService {
         }
     }
 
-    private void parse(ConsumerRecord<String, Order> record) throws ExecutionException, InterruptedException, SQLException {
+    private void parse(ConsumerRecord<String, Order> record) throws SQLException {
         System.out.println("________________________________________");
         System.out.println("Processing new order, checking new user");
         System.out.println(record.key());
@@ -41,6 +42,8 @@ public class CreateUserService {
         var order = record.value();
         if(isNewUser(order.getEmail())) {
             insertNewUser(order.getEmail());
+        } else {
+            System.out.println("User " + order.getEmail() + " already exists");
         }
     }
 
