@@ -11,4 +11,13 @@ public class Order {
     private final String userId;
     private final String orderId;
     private final BigDecimal amount;
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "\nuserId='" + userId + '\'' +
+                "\n, orderId='" + orderId + '\'' +
+                "\n, amount=" + amount +
+                "\n}";
+    }
 }
