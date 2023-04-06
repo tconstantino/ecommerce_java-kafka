@@ -40,10 +40,9 @@ public class KafkaService<T> implements Closeable {
                 records.forEach((record) -> {
                     try {
                         parse.consume(record);
-                    } catch (ExecutionException e) {
-                        // So far, just logging the exception for this message
-                        throw new RuntimeException(e);
-                    } catch (InterruptedException e) {
+                    } catch (Exception e) {
+                        // Only catches Exception because no matter which Exception
+                        // I want to recover and parse the next one
                         // So far, just logging the exception for this message
                         throw new RuntimeException(e);
                     }
