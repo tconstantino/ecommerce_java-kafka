@@ -8,7 +8,7 @@ import java.nio.file.Path;
 
 
 public class ReadingReportService {
-    private final static Path SOURCE = new File("/src/main/resources/reports.txt").toPath();
+    private final static Path SOURCE = new File("service-reading-report/src/main/resources/report.txt").toPath();
     private final KafkaDispatcher<User> orderDispatcher = new KafkaDispatcher<>();
     public static void main(String[] args) {
         var readingReportService = new ReadingReportService();

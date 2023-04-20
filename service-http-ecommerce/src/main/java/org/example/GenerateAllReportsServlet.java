@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -26,7 +27,7 @@ public class GenerateAllReportsServlet extends HttpServlet {
 
             System.out.println("Sent generate reports to all users");
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().println("Report requests generated");
+            resp.getWriter().println("Report requests generated: " + new Date().toString());
         } catch (ExecutionException e) {
             throw new ServletException(e);
         } catch (InterruptedException e) {
