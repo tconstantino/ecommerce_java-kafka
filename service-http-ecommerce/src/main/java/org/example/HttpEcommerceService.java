@@ -9,6 +9,7 @@ public class HttpEcommerceService {
         var context = new ServletContextHandler();
         context.setContextPath("/");
         context.addServlet(new ServletHolder(new NewOrderServlet()), "/order/new");
+        context.addServlet(new ServletHolder(new GenerateAllReportsServlet()), "/admin/generate/reports");
 
         var server = new Server(8080);
         server.setHandler(context);
