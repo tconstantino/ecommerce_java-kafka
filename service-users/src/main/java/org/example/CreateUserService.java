@@ -20,7 +20,6 @@ public class CreateUserService {
         }
     }
     private final Connection connection;
-    private final KafkaDispatcher<Order> orderDispatcher = new KafkaDispatcher<>();
     public static void main(String[] args) throws SQLException {
         var createUserService = new CreateUserService();
         try(var service = new KafkaService<>(CreateUserService.class.getSimpleName(),
@@ -39,7 +38,8 @@ public class CreateUserService {
         System.out.println(record.partition());
         System.out.println(record.offset());
 
-        var order = record.value();
+        var message = record.value();
+        var order = message.getPayload();
         if(isNewUser(order.getEmail())) {
             insertNewUser(order.getEmail());
         } else {

@@ -22,8 +22,9 @@ public class GenerateAllReportsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             var key = UUID.randomUUID().toString();
-            var value = "USER_GENERATE_READING_REPORT";
-            batchDispatcher.send("SEND_MESSAGE_TO_ALL_USES", key, value);
+            var correlationId = new CorrelationId(GenerateAllReportsServlet.class.getSimpleName());
+            var value = "ECOMMERCE_USER_GENERATE_READING_REPORT";
+            batchDispatcher.send("ECOMMERCE_SEND_MESSAGE_TO_ALL_USES", key, correlationId, value);
 
             System.out.println("Sent generate reports to all users");
             resp.setStatus(HttpServletResponse.SC_OK);

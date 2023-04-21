@@ -31,14 +31,16 @@ public class FraudDetectorService {
             e.printStackTrace();
         }
 
-        var order = record.value();
+        var message = record.value();
+        var correlationId = message.getId().continueWith(FraudDetectorService.class.getSimpleName());
+        var order = message.getPayload();
         if(isFraud(order)) {
             //Pretending thar the fraud happens when the amount is >= 4500
             System.out.println("Order is a fraud!!!");
-            orderDispatcher.send("ECOMMERCE_ORDER_REJECTED", order.getEmail(), order);
+            orderDispatcher.send("ECOMMERCE_ORDER_REJECTED", order.getEmail(), correlationId, order);
         } else {
             System.out.println("Approved: " +  order);
-            orderDispatcher.send("ECOMMERCE_ORDER_APPROVED", order.getEmail(), order);
+            orderDispatcher.send("ECOMMERCE_ORDER_APPROVED", order.getEmail(), correlationId, order);
         }
 
         System.out.println("Order processed");

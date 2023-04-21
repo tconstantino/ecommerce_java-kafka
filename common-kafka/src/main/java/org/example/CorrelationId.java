@@ -3,8 +3,8 @@ package org.example;
 import java.util.UUID;
 
 public class CorrelationId {
-    CorrelationId() {
-        id = UUID.randomUUID().toString();
+    CorrelationId(String title) {
+        id = title + "("+ UUID.randomUUID().toString() + ")";
     }
 
     private final String id;
@@ -18,5 +18,9 @@ public class CorrelationId {
         return "CorrelationId{" +
                 "id='" + id + '\'' +
                 '}';
+    }
+
+    public CorrelationId continueWith(String title) {
+        return new CorrelationId(id + "-" + title);
     }
 }
