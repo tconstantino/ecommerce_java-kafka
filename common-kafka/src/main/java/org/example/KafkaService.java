@@ -16,26 +16,26 @@ public class KafkaService<T> implements Closeable {
     private final KafkaConsumer<String, T> consumer;
     private final ConsumerFunction parse;
 
-    public KafkaService(String groupId, String topic, ConsumerFunction<T> parse, Class<T> type) {
-        this(groupId, parse, type, Map.of());
+    public KafkaService(String groupId, String topic, ConsumerFunction<T> parse) {
+        this(groupId, parse, Map.of());
         consumer.subscribe(Collections.singletonList(topic));
     }
 
-    public KafkaService(String groupId, Pattern topic, ConsumerFunction<T> parse, Class<T> type, Map<String, String> properties) {
-        this(groupId, parse, type, properties);
+    public KafkaService(String groupId, Pattern topic, ConsumerFunction<T> parse, Map<String, String> properties) {
+        this(groupId, parse, properties);
         consumer.subscribe(topic);
     }
 
-    private KafkaService(String groupId, ConsumerFunction<T> parse, Class<T> type, Map<String, String> properties) {
+    private KafkaService(String groupId, ConsumerFunction<T> parse, Map<String, String> properties) {
         this.parse = parse;
-        this.consumer = new KafkaConsumer<>(getProperties(groupId, type, properties));
+        this.consumer = new KafkaConsumer<>(getProperties(groupId, properties));
     }
 
     void run() {
         while (true) {
             var records = consumer.poll(Duration.ofMillis(100));
             if (!records.isEmpty()) {
-                System.out.println("Encontrei " + records.count() + " registros");
+                System.out.println("Encontrei " + records.count() + " registro(s)");
                 records.forEach((record) -> {
                     try {
                         parse.consume(record);
@@ -50,7 +50,7 @@ public class KafkaService<T> implements Closeable {
         }
     }
 
-    private Properties getProperties(String groupId, Class<T> type, Map<String, String> overrideProperties) {
+    private Properties getProperties(String groupId, Map<String, String> overrideProperties) {
         var properties = new Properties();
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
         properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
