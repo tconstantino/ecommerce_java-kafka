@@ -31,7 +31,7 @@ public class CreateUserService {
         }
     }
 
-    private void parse(ConsumerRecord<String, Order> record) throws SQLException {
+    private void parse(ConsumerRecord<String, Message<Order>> record) throws SQLException {
         System.out.println("________________________________________");
         System.out.println("Processing new order, checking new user");
         System.out.println(record.key());

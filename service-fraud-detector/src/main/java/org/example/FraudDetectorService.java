@@ -17,7 +17,7 @@ public class FraudDetectorService {
         }
     }
 
-    private void parse(ConsumerRecord<String, Order> record) throws ExecutionException, InterruptedException {
+    private void parse(ConsumerRecord<String, Message<Order>> record) throws ExecutionException, InterruptedException {
         System.out.println("________________________________________");
         System.out.println("Processing new order, checking for fraud");
         System.out.println(record.key());
