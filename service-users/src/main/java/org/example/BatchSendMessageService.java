@@ -21,7 +21,7 @@ public class BatchSendMessageService {
     }
     private final Connection connection;
     private final KafkaDispatcher<User> userDispatcher = new KafkaDispatcher<>();
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, ExecutionException, InterruptedException {
         var batchSendMessageService = new BatchSendMessageService();
         try(var service = new KafkaService<>(BatchSendMessageService.class.getSimpleName(),
                 "ECOMMERCE_SEND_MESSAGE_TO_ALL_USES",
@@ -38,6 +38,8 @@ public class BatchSendMessageService {
         System.out.println("Topic: " + message.getPayload());
         System.out.println(record.partition());
         System.out.println(record.offset());
+
+        if(true) throw new RuntimeException("Erro forçado");
 
         for(User user:getAllUsers()) {
             var correlationId = message.getId().continueWith(BatchSendMessageService.class.getSimpleName());

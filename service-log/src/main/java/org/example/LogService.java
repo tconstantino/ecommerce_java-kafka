@@ -9,10 +9,11 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 public class LogService {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         var logService = new LogService();
         try(var service = new KafkaService<>(LogService.class.getSimpleName(),
                 Pattern.compile("ECOMMERCE.*"),

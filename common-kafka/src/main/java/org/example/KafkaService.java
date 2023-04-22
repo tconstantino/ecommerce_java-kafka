@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 public class KafkaService<T> implements Closeable {
@@ -32,20 +33,30 @@ public class KafkaService<T> implements Closeable {
     }
 
     void run() {
-        while (true) {
-            var records = consumer.poll(Duration.ofMillis(100));
-            if (!records.isEmpty()) {
-                System.out.println("Encontrei " + records.count() + " registro(s)");
-                records.forEach((record) -> {
-                    try {
-                        parse.consume(record);
-                    } catch (Exception e) {
-                        // Only catches Exception because no matter which Exception
-                        // I want to recover and parse the next one
-                        // So far, just logging the exception for this message
-                        throw new RuntimeException(e);
-                    }
-                });
+        try(var deadLetter = new KafkaDispatcher<>()) {
+            while (true) {
+                var records = consumer.poll(Duration.ofMillis(100));
+                if (!records.isEmpty()) {
+                    System.out.println("Encontrei " + records.count() + " registro(s)");
+                    records.forEach((record) -> {
+                        try {
+                            parse.consume(record);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            var message = (Message) record.value();
+                            var key = UUID.randomUUID().toString();
+                            var correlationId = message.getId().continueWith("DeadLetter");
+                            var payload = new GsonSerializer().serialize("", message);
+                            try {
+                                deadLetter.send("ECOMMERCE_DEADLETTER", key, correlationId, payload);
+                            } catch (ExecutionException ex) {
+                                throw new RuntimeException(ex);
+                            } catch (InterruptedException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
+                    });
+                }
             }
         }
     }
