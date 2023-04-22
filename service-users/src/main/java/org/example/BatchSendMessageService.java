@@ -42,6 +42,7 @@ public class BatchSendMessageService {
         for(User user:getAllUsers()) {
             var correlationId = message.getId().continueWith(BatchSendMessageService.class.getSimpleName());
             userDispatcher.send(message.getPayload(), user.getUuid(), correlationId, user);
+            System.out.println("Enviei para " + user);
         }
     }
 
