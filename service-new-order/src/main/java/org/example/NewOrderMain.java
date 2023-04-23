@@ -8,8 +8,7 @@ import java.util.concurrent.ExecutionException;
 
 public class NewOrderMain {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        try(var orderDispatcher = new KafkaDispatcher<Order>();
-            var emailDispatcher = new KafkaDispatcher<Email>()) {
+        try(var orderDispatcher = new KafkaDispatcher<Order>()) {
 
             var userEmail = Math.random() + "@email.com";
 
@@ -22,12 +21,6 @@ public class NewOrderMain {
                 var orderCorrelationId = new CorrelationId(NewOrderMain.class.getSimpleName());
                 var order = new Order(orderId, amount, userEmail);
                 orderDispatcher.send("ECOMMERCE_NEW_ORDER", key, orderCorrelationId, order);
-
-                var subject = "New order";
-                var body = "Thank you for your order! We are processing your order!";
-                var emailCorrelationId = new CorrelationId(NewOrderMain.class.getSimpleName());
-                var emailCode = new Email(subject, body);
-                emailDispatcher.send("ECOMMERCE_SEND_EMAIL", key, emailCorrelationId, emailCode);
             }
         }
     }
