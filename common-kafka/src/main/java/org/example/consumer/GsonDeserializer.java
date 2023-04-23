@@ -1,8 +1,10 @@
-package org.example;
+package org.example.consumer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.kafka.common.serialization.Deserializer;
+import org.example.Message;
+import org.example.MessageAdpater;
 
 import java.util.Map;
 

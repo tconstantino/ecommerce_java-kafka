@@ -1,7 +1,7 @@
 package org.example;
 
 public class Message<T> {
-    Message(CorrelationId id, T payload) {
+    public Message(CorrelationId id, T payload) {
         this.id = id;
         this.payload = payload;
     }

@@ -1,8 +1,11 @@
-package org.example;
+package org.example.consumer;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.example.Message;
+import org.example.dispatcher.GsonSerializer;
+import org.example.dispatcher.KafkaDispatcher;
 
 import java.io.Closeable;
 import java.time.Duration;
@@ -32,7 +35,7 @@ public class KafkaService<T> implements Closeable {
         this.consumer = new KafkaConsumer<>(getProperties(groupId, properties));
     }
 
-    void run() {
+    public void run() {
         try(var deadLetter = new KafkaDispatcher<>()) {
             while (true) {
                 var records = consumer.poll(Duration.ofMillis(100));
