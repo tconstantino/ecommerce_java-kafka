@@ -1,23 +1,19 @@
 package org.example;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.example.consumer.KafkaService;
 import org.example.dispatcher.KafkaDispatcher;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
-public class EmailNewOrderService {
+public class EmailNewOrderService implements ConsumerService<Order> {
     private final KafkaDispatcher<Email> emailDispatcher = new KafkaDispatcher<>();
     public static void main(String[] args) {
-        var emailNewOrderService = new EmailNewOrderService();
-        try(var service = new KafkaService<>(EmailNewOrderService.class.getSimpleName(),
-                "ECOMMERCE_NEW_ORDER",
-                emailNewOrderService::parse)) {
-            service.run();
-        }
+        new ServiceRunner(EmailNewOrderService::new).start(1);
     }
-    private void parse(ConsumerRecord<String, Message<Order>> record) throws ExecutionException, InterruptedException {
+
+    @Override
+    public void parse(ConsumerRecord<String, Message<Order>> record) throws ExecutionException, InterruptedException {
         System.out.println("________________________________________");
         System.out.println("Processing new order, preparing email");
         System.out.println(record.key());
@@ -35,5 +31,15 @@ public class EmailNewOrderService {
         emailDispatcher.send("ECOMMERCE_SEND_EMAIL", key, correlationId, emailCode);
 
         System.out.println("Email prepared");
+    }
+
+    @Override
+    public String getTopic() {
+        return "ECOMMERCE_NEW_ORDER";
+    }
+
+    @Override
+    public String getConsumerGroup() {
+        return EmailNewOrderService.class.getSimpleName();
     }
 }
