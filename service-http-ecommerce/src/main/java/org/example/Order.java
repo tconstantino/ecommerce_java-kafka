@@ -12,6 +12,10 @@ public class Order {
     private final BigDecimal amount;
     private final String email;
 
+    public String getOrderId() {
+        return orderId;
+    }
+
     @Override
     public String toString() {
         return "Order{" +

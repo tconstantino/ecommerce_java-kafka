@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 
 public class ReadingReportService implements ConsumerService<User> {
-    private final static Path SOURCE = new File("service-reading-report/src/main/resources/report.txt").toPath();
+    private final static Path SOURCE = new File("src/main/resources/report.txt").toPath();
 
     public static void main(String[] args) {
         new ServiceRunner(ReadingReportService::new).start(5);

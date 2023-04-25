@@ -10,6 +10,6 @@ public class User {
     }
 
     public String getReportPath() {
-        return "service-reading-report/target/" + uuid + "-report.txt";
+        return "target/" + uuid + "-report.txt";
     }
 }

@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class LocalDatabase {
     public LocalDatabase(String name) throws SQLException {
-        String url = "jdbc:sqlite:service-users/target/" + name + ".db";
+        String url = "jdbc:sqlite:target/" + name + ".db";
         this.connection = DriverManager.getConnection(url);
     }
 
@@ -38,5 +38,9 @@ public class LocalDatabase {
     public ResultSet query(String sql, String ...params) throws SQLException {
         var query = getPreparedStatement(sql, params);
         return query.executeQuery();
+    }
+
+    public void close() throws SQLException {
+        connection.close();
     }
 }
