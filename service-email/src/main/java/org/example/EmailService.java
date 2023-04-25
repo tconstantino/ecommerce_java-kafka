@@ -2,6 +2,8 @@ package org.example;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
+import java.util.regex.Pattern;
+
 public class EmailService implements ConsumerService<Email>{
     public static void main(String[] args) {
         new ServiceRunner(EmailService::new).start(5);
@@ -27,6 +29,11 @@ public class EmailService implements ConsumerService<Email>{
     @Override
     public String getTopic() {
         return "ECOMMERCE_SEND_EMAIL";
+    }
+
+    @Override
+    public Pattern getPatternTopic() {
+        return null;
     }
 
     @Override

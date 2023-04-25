@@ -1,31 +1,38 @@
 package org.example;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.example.consumer.KafkaService;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
-public class LogService {
+public class LogService implements ConsumerService<String> {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        var logService = new LogService();
-        try(var service = new KafkaService<>(LogService.class.getSimpleName(),
-                Pattern.compile("ECOMMERCE.*"),
-                logService::parse,
-                Map.of(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName()))){
-            service.run();
-        }
+       new ServiceRunner(LogService::new).start(3);
     }
 
-    private void parse(ConsumerRecord<String, Message<String>> record) {
+    @Override
+    public void parse(ConsumerRecord<String, Message<String>> record) {
         System.out.println("________________________________________");
         System.out.println("LOG: " + record.topic());
         System.out.println(record.key());
         System.out.println(record.value());
         System.out.println(record.partition());
         System.out.println(record.offset());
+    }
+
+    @Override
+    public String getTopic() {
+        return null;
+    }
+
+    @Override
+    public Pattern getPatternTopic() {
+        return Pattern.compile("ECOMMERCE.*");
+    }
+
+    @Override
+    public String getConsumerGroup() {
+        return LogService.class.getSimpleName();
     }
 }

@@ -5,6 +5,7 @@ import org.example.dispatcher.KafkaDispatcher;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Pattern;
 
 public class EmailNewOrderService implements ConsumerService<Order> {
     private final KafkaDispatcher<Email> emailDispatcher = new KafkaDispatcher<>();
@@ -36,6 +37,11 @@ public class EmailNewOrderService implements ConsumerService<Order> {
     @Override
     public String getTopic() {
         return "ECOMMERCE_NEW_ORDER";
+    }
+
+    @Override
+    public Pattern getPatternTopic() {
+        return null;
     }
 
     @Override

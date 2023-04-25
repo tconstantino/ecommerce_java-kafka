@@ -1,12 +1,11 @@
 package org.example;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.example.consumer.KafkaService;
-import org.example.dispatcher.KafkaDispatcher;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.regex.Pattern;
 
 
 public class ReadingReportService implements ConsumerService<User> {
@@ -37,6 +36,11 @@ public class ReadingReportService implements ConsumerService<User> {
     @Override
     public String getTopic() {
         return "ECOMMERCE_USER_GENERATE_READING_REPORT";
+    }
+
+    @Override
+    public Pattern getPatternTopic() {
+        return null;
     }
 
     @Override
