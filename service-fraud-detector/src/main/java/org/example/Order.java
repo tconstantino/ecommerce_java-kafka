@@ -30,4 +30,8 @@ public class Order {
     public String getEmail() {
         return email;
     }
+
+    public String getOrderId() {
+        return orderId;
+    }
 }

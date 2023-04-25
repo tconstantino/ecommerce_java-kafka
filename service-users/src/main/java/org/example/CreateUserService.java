@@ -10,17 +10,12 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class CreateUserService implements ConsumerService<Order> {
+    private final LocalDatabase database;
+
     private CreateUserService() throws SQLException {
-        String url = "jdbc:sqlite:service-users/target/users_database.db";
-        this.connection = DriverManager.getConnection(url);
-        try {
-            connection.createStatement().execute("CREATE TABLE USERS (UUID VARCHAR(200) PRIMARY KEY, EMAIL VARCHAR(200))");
-        } catch (SQLException e) {
-            // Be careful, the sql could be wrong, be really careful
-            e.printStackTrace();
-        }
+        this.database = new LocalDatabase("users_database");
+        this.database.createIfNotExists("CREATE TABLE USERS (UUID VARCHAR(200) PRIMARY KEY, EMAIL VARCHAR(200))");
     }
-    private final Connection connection;
 
     public static void main(String[] args) {
         new ServiceRunner(CreateUserService::new).start(1);
@@ -60,19 +55,13 @@ public class CreateUserService implements ConsumerService<Order> {
     }
 
     private void insertNewUser(String email) throws SQLException {
-        var insert = connection.prepareStatement("INSERT INTO USERS (UUID, EMAIL) VALUES (?, ?)");
         var uuid = UUID.randomUUID().toString();
-        insert.setString(1, uuid);
-        insert.setString(2, email);
-        insert.execute();
+        database.insertOrUpdate("INSERT INTO USERS (UUID, EMAIL) VALUES (?, ?)", uuid, email);
         System.out.println("User " + uuid + " and " + email + " created!");
-
     }
 
     private Boolean isNewUser(String email) throws SQLException {
-        var query = connection.prepareStatement("SELECT UUID FROM USERS WHERE EMAIL = ? LIMIT 1");
-        query.setString(1, email);
-        var results = query.executeQuery();
+        var results = database.query("SELECT UUID FROM USERS WHERE EMAIL = ? LIMIT 1", email);
         return !results.next();
     }
 }
